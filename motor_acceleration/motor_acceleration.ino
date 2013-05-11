@@ -4,11 +4,12 @@
 #define PIN_MOTOR_RIGHT		6
 #define MAX_SPEED		255
 #define MIN_SPEED		40
+#define ACCELERATION_DELAY	10
 #define CMD_LEFT_START		'a'
 #define CMD_RIGHT_START		'b'
 #define CMD_LEFT_STOP		'c'
 #define CMD_RIGHT_STOP		'd'
-#define ACCELERATION_DELAY	10
+#define CMD_STOP		'e'
 
 //-------------------------------------
 // Motor control
@@ -77,6 +78,10 @@ void loop() {
       analogWrite(PIN_MOTOR_LEFT, 0);
       break;
     case CMD_RIGHT_STOP:
+      analogWrite(PIN_MOTOR_RIGHT, 0);
+      break;
+    case CMD_STOP:
+      analogWrite(PIN_MOTOR_LEFT, 0);
       analogWrite(PIN_MOTOR_RIGHT, 0);
       break;
     }
