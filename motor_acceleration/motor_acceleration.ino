@@ -1,23 +1,31 @@
 #define MOTOR_LEFT		0
 #define MOTOR_RIGHT		1
-#define PIN_MOTOR_LEFT		5
-#define PIN_MOTOR_RIGHT		6
+// #define PIN_MOTOR_LEFT		5
+// #define PIN_MOTOR_RIGHT		6
 #define MAX_SPEED		255
 #define MIN_SPEED		40
 #define ACCELERATION_DELAY	10
-#define CMD_LEFT_START		'a'
-#define CMD_RIGHT_START		'b'
-#define CMD_LEFT_STOP		'c'
-#define CMD_RIGHT_STOP		'd'
-#define CMD_STOP		'e'
+#define CMD_LEFT_START		'd'
+#define CMD_RIGHT_START		'g'
+#define CMD_LEFT_STOP		's'
+#define CMD_RIGHT_STOP		'h'
+#define CMD_STOP		' '
+#define CMD_FORWARD		'r'
+#define CMD_BACKWARD		'f'
 
-#define ENABLE_A  5
-#define ENABLE_B  6
-#define INA_1     10
-#define INA_2     11
-#define INB_1     12
-#define INB_2     13
 
+// #define ENABLE_A		5
+// #define ENABLE_B		6
+#define INA_1			5
+#define INA_2			6
+#define INB_1			9
+#define INB_2			10
+
+#define DIR_STOP		0
+#define DIR_FORWARD		1
+#define DIR_BACKWARD		2
+#define DIR_LEFT		3
+#define DIR_RIGHT		4
 
 //--------------------------------------------------------
 // TYPE DEFINITION
@@ -35,8 +43,6 @@ struct DirectionMap
   char      key;
   Direction dir;
 };
-//-------------------------------------
-// Motor control
 
 typedef struct {
   bool	inAcceleration;
@@ -44,45 +50,64 @@ typedef struct {
   int	pin;
 } t_motor;
 
-t_motor motor[] = {
-  { false, 0, PIN_MOTOR_LEFT  },
-  { false, 0, PIN_MOTOR_RIGHT }
+//--------------------------------------------------------
+// INIT VARIABLE
+//--------------------------------------------------------
+Direction forward  = { HIGH, LOW, HIGH, LOW };
+Direction backward = { LOW, HIGH, LOW, HIGH };
+Direction left     = { LOW, HIGH, HIGH, LOW };
+Direction right    = { HIGH, LOW, LOW, HIGH };
+Direction stop     = { LOW, LOW, LOW, LOW};
+
+struct DirectionMap dirMap[] =
+{
+  { 'f', stop },
+  { 'w', forward },
+  { 's', backward },
+  { 'a', left },
+  { 'd', right },
+  { 0, NULL }
 };
 
-void run() {
-  acceleration(MOTOR_LEFT);
-  acceleration(MOTOR_RIGHT);
-}
+struct Direction *dir;
 
-void startMotor(int motorNum) {
-  if (motorNum == MOTOR_LEFT || motorNum == MOTOR_RIGHT) {
-    motor[motorNum].inAcceleration = true;
-    motor[motorNum].speed = MIN_SPEED;
+// t_motor motor[] = {
+//   { false, 0, PIN_MOTOR_LEFT  },
+//   { false, 0, PIN_MOTOR_RIGHT }
+// };
+
+//--------------------------------------------------------
+// MAP FUNCTION
+//--------------------------------------------------------
+struct Direction *getDir(char c)
+{
+  int i = 0;
+  while (dirMap[i].key != 0)
+  {
+    if (dirMap[i].key == c)
+      return &dirMap[i].dir;
+    ++i;
   }
+  return NULL;
 }
 
-void acceleration(int motorNum) {
-  if (motorNum != MOTOR_LEFT && motorNum != MOTOR_RIGHT)
-    return;
-
-  for (int i = 0; i < 2; ++i) {
-    if (motor[i].inAcceleration) {
-      motor[i].speed++;
-      analogWrite(motor[motorNum].pin, motor[motorNum].speed);
-      if (motor[i].speed >= MAX_SPEED)
-	motor[i].inAcceleration = false;
-    }
-  }
-
-  delay(ACCELERATION_DELAY);
-}
-
-//-------------------------------------
-//
+//--------------------------------------------------------
+// ARDUINO FUNCTIONS
+//--------------------------------------------------------
 void setup() {
   Serial.begin(9600);
-  pinMode(PIN_MOTOR_LEFT, OUTPUT);
-  pinMode(PIN_MOTOR_RIGHT, OUTPUT);
+  // pinMode(ENABLE_A, OUTPUT);
+  // pinMode(ENABLE_B, OUTPUT);
+  pinMode(INA_1, OUTPUT);
+  pinMode(INA_2, OUTPUT);
+  pinMode(INB_1, OUTPUT);
+  pinMode(INB_2, OUTPUT);
+
+  // analogWrite(ENABLE_A, 255);
+  // analogWrite(ENABLE_B, 255);
+
+  // pinMode(PIN_MOTOR_LEFT, OUTPUT);
+  // pinMode(PIN_MOTOR_RIGHT, OUTPUT);
 }
 
 void loop() {
@@ -91,24 +116,90 @@ void loop() {
   if (Serial.available() > 0) {
     buffer = Serial.read();
 
-    switch(buffer) {
-    case CMD_LEFT_START:
-      startMotor(MOTOR_LEFT);
-      break;
-    case CMD_RIGHT_START:
-      startMotor(MOTOR_RIGHT);
-      break;
-    case CMD_LEFT_STOP:
-      analogWrite(PIN_MOTOR_LEFT, 0);
-      break;
-    case CMD_RIGHT_STOP:
-      analogWrite(PIN_MOTOR_RIGHT, 0);
-      break;
-    case CMD_STOP:
-      analogWrite(PIN_MOTOR_LEFT, 0);
-      analogWrite(PIN_MOTOR_RIGHT, 0);
-      break;
-    }
+    move(*getDir((char) buffer));
+
+    // switch(buffer) {
+    // case CMD_LEFT_START:
+    //   startMotor(MOTOR_LEFT);
+    //   break;
+    // case CMD_RIGHT_START:
+    //   startMotor(MOTOR_RIGHT);
+    //   break;
+    // case CMD_LEFT_STOP:
+    //   analogWrite(PIN_MOTOR_LEFT, 0);
+    //   break;
+    // case CMD_RIGHT_STOP:
+    //   analogWrite(PIN_MOTOR_RIGHT, 0);
+    //   break;
+    // case CMD_STOP:
+    //   analogWrite(PIN_MOTOR_LEFT, 0);
+    //   analogWrite(PIN_MOTOR_RIGHT, 0);
+    //   break;
+    // }
   }
-  run();
+  //run();
 }
+
+//--------------------------------------------------------
+// MOTOR CONTROL
+//--------------------------------------------------------
+// void run() {
+//   acceleration(MOTOR_LEFT);
+//   acceleration(MOTOR_RIGHT);
+// }
+
+// void startMotor(int motorNum) {
+//   if (motorNum == MOTOR_LEFT || motorNum == MOTOR_RIGHT) {
+//     motor[motorNum].inAcceleration = true;
+//     motor[motorNum].speed = MIN_SPEED;
+//   }
+// }
+
+// void acceleration(int motorNum) {
+//   if (motorNum != MOTOR_LEFT && motorNum != MOTOR_RIGHT)
+//     return;
+
+//   for (int i = 0; i < 2; ++i) {
+//     if (motor[i].inAcceleration) {
+//       motor[i].speed++;
+//       analogWrite(motor[motorNum].pin, motor[motorNum].speed);
+//       if (motor[i].speed >= MAX_SPEED)
+// 	motor[i].inAcceleration = false;
+//     }
+//   }
+
+//   delay(ACCELERATION_DELAY);
+// }
+
+void move(struct Direction &dir)
+{
+  digitalWrite(INA_1, dir.ina_1);
+  digitalWrite(INA_2, dir.ina_2);
+  digitalWrite(INB_1, dir.inb_1);
+  digitalWrite(INB_2, dir.inb_2);
+}
+
+// void forward()
+// {
+//   move(dirMap[DIR_FORWARD].dir);
+// }
+
+// void backward()
+// {
+//   move(dirMap[DIR_BACKWARD].dir);
+// }
+
+// void left()
+// {
+//   move(dirMap[DIR_LEFT].dir);
+// }
+
+// void right()
+// {
+//   move(dirMap[DIR_RIGHT].dir);
+// }
+
+// void stop()
+// {
+//   move(dirMap[DIR_STOP].dir);
+// }
