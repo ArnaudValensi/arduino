@@ -149,7 +149,7 @@ void startMotor(struct Direction &dir) {
 
 void acceleration() {
   for (int i = 0; i < 4; ++i) {
-    if (motor.dirSpeed.in[i] > 0)
+    if (motor.dirSpeed.in[i] > 0 && motor.dirSpeed.in[i] < 254)
       (motor.dirSpeed.in[i])++;
   }
   move(motor.dirSpeed);
