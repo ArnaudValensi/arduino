@@ -32,10 +32,7 @@
 //--------------------------------------------------------
 struct Direction
 {
-  int ina_1;
-  int ina_2;
-  int inb_1;
-  int inb_2;
+  int in[4];
 };
 
 struct DirectionMap
@@ -45,22 +42,17 @@ struct DirectionMap
 };
 
 typedef struct {
-  bool	inAcceleration;
-  int	speed;
-  int	pin;
+  Direction	dirSpeed;
 } t_motor;
 
 //--------------------------------------------------------
 // INIT VARIABLE
 //--------------------------------------------------------
-#define NORUN	0
-#define RUN	150
-
-Direction forward  = { RUN, NORUN, RUN, NORUN };
-Direction backward = { NORUN, RUN, NORUN, RUN };
-Direction left     = { NORUN, RUN, RUN, NORUN };
-Direction right    = { RUN, NORUN, NORUN, RUN };
-Direction stop     = { NORUN, NORUN, NORUN, NORUN};
+Direction forward  = { 1, 0, 1, 0 };
+Direction backward = { 0, 1, 0, 1 };
+Direction left     = { 0, 1, 1, 0 };
+Direction right    = { 1, 0, 0, 1 };
+Direction stop     = { 0, 0, 0, 0};
 
 struct DirectionMap dirMap[] =
 {
@@ -74,10 +66,7 @@ struct DirectionMap dirMap[] =
 
 struct Direction *dir;
 
-// t_motor motor[] = {
-//   { false, 0, PIN_MOTOR_LEFT  },
-//   { false, 0, PIN_MOTOR_RIGHT }
-// };
+t_motor motor;
 
 //--------------------------------------------------------
 // MAP FUNCTION
@@ -119,7 +108,7 @@ void loop() {
   if (Serial.available() > 0) {
     buffer = Serial.read();
 
-    move(*getDir((char) buffer));
+    startMotor(*getDir((char) buffer));
 
     // switch(buffer) {
     // case CMD_LEFT_START:
@@ -146,12 +135,28 @@ void loop() {
 //--------------------------------------------------------
 // MOTOR CONTROL
 //--------------------------------------------------------
-// void run() {
-//   acceleration(MOTOR_LEFT);
-//   acceleration(MOTOR_RIGHT);
-// }
+void run() {
+  acceleration();
+}
 
-// void startMotor(int motorNum) {
+void startMotor(struct Direction &dir) {
+  motor.dirSpeed = dir;
+  for (int i = 0; i < 4; ++i) {
+    if (motor.dirSpeed.in[i] == 1)
+      motor.dirSpeed.in[i] = MIN_SPEED;
+  }
+}
+
+void acceleration() {
+  for (int i = 0; i < 4; ++i) {
+    if (motor.dirSpeed.in[i] > 0)
+      (motor.dirSpeed.in[i])++;
+  }
+  move(motor.dirSpeed);
+  delay(ACCELERATION_DELAY);
+}
+
+// void startMotor(struct Direction &dir) {
 //   if (motorNum == MOTOR_LEFT || motorNum == MOTOR_RIGHT) {
 //     motor[motorNum].inAcceleration = true;
 //     motor[motorNum].speed = MIN_SPEED;
@@ -165,7 +170,7 @@ void loop() {
 //   for (int i = 0; i < 2; ++i) {
 //     if (motor[i].inAcceleration) {
 //       motor[i].speed++;
-//       analogWrite(motor[motorNum].pin, motor[motorNum].speed);
+//       // analogWrite(motor[motorNum].pin, motor[motorNum].speed);
 //       if (motor[i].speed >= MAX_SPEED)
 // 	motor[i].inAcceleration = false;
 //     }
@@ -176,10 +181,10 @@ void loop() {
 
 void move(struct Direction &dir)
 {
-  analogWrite(INA_1, dir.ina_1);
-  analogWrite(INA_2, dir.ina_2);
-  analogWrite(INB_1, dir.inb_1);
-  analogWrite(INB_2, dir.inb_2);
+  analogWrite(INA_1, dir.in[0]);
+  analogWrite(INA_2, dir.in[1]);
+  analogWrite(INB_1, dir.in[2]);
+  analogWrite(INB_2, dir.in[3]);
 }
 
 // void goForward()
