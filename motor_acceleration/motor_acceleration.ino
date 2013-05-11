@@ -11,6 +11,30 @@
 #define CMD_RIGHT_STOP		'd'
 #define CMD_STOP		'e'
 
+#define ENABLE_A  5
+#define ENABLE_B  6
+#define INA_1     10
+#define INA_2     11
+#define INB_1     12
+#define INB_2     13
+
+
+//--------------------------------------------------------
+// TYPE DEFINITION
+//--------------------------------------------------------
+struct Direction
+{
+  int ina_1;
+  int ina_2;
+  int inb_1;
+  int inb_2;
+};
+
+struct DirectionMap
+{
+  char      key;
+  Direction dir;
+};
 //-------------------------------------
 // Motor control
 
@@ -62,7 +86,7 @@ void setup() {
 }
 
 void loop() {
-  char buffer;
+  int buffer;
 
   if (Serial.available() > 0) {
     buffer = Serial.read();
