@@ -66,13 +66,19 @@ void loop() {
     case CMD_LEFT_START:
       analogWrite(MOTOR_LEFT, 100);
       //startMotor(CMD_LEFT_START);
+      break;
     case CMD_RIGHT_START:
       analogWrite(MOTOR_RIGHT, 100);
       //startMotor(CMD_RIGHT_START);
+      break;
     case CMD_LEFT_STOP:
       analogWrite(MOTOR_LEFT, 0);
+      break;
     case CMD_RIGHT_STOP:
       analogWrite(MOTOR_RIGHT, 0);
+      break;
+    default:
+      break;
     }
   }
   run();
