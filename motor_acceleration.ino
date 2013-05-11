@@ -73,11 +73,11 @@ void loop() {
     switch(buffer) {
     case CMD_LEFT_START:
       // analogWrite(PIN_MOTOR_LEFT, 100);
-      startMotor(CMD_LEFT_START);
+      startMotor(MOTOR_LEFT);
       break;
     case CMD_RIGHT_START:
       // analogWrite(PIN_MOTOR_RIGHT, 100);
-      startMotor(CMD_RIGHT_START);
+      startMotor(MOTOR_RIGHT);
       break;
     case CMD_LEFT_STOP:
       analogWrite(MOTOR_LEFT, 0);
