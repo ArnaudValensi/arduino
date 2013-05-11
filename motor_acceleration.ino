@@ -51,6 +51,7 @@ void acceleration(int motor) {
 //-------------------------------------
 //
 void setup() {
+  Serial.begin(9600);
   pinMode(MOTOR_LEFT, OUTPUT);
   pinMode(MOTOR_RIGHT, OUTPUT);
 }
