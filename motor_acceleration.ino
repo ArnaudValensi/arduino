@@ -1,59 +1,63 @@
-#define MOTOR_LEFT	5
-#define MOTOR_RIGHT	6
-#define MAX_SPEED	255
-#define MIN_SPEED	40
-#define CMD_LEFT_START	'a'
-#define CMD_RIGHT_START	'b'
-#define CMD_LEFT_STOP	'c'
-#define CMD_RIGHT_STOP	'd'
+#define MOTOR_LEFT		0
+#define MOTOR_RIGHT		1
+#define PIN_MOTOR_LEFT		5
+#define PIN_MOTOR_RIGHT		6
+#define MAX_SPEED		255
+#define MIN_SPEED		40
+#define CMD_LEFT_START		'a'
+#define CMD_RIGHT_START		'b'
+#define CMD_LEFT_STOP		'c'
+#define CMD_RIGHT_STOP		'd'
+#define ACCELERATION_DELAY	10
 
 //-------------------------------------
 // Motor control
-int i_left = 0;
-int i_right = 0;
-boolean isLeftAcceleration = false;
-boolean isRightAcceleration = false;
+
+typedef struct {
+  bool	inAcceleration;
+  int	speed;
+  int	pin;
+} t_motor;
+
+t_motor motor[] = {
+  { false, 0, PIN_MOTOR_LEFT  },
+  { false, 0, PIN_MOTOR_RIGHT }
+};
 
 void run() {
   acceleration(MOTOR_LEFT);
   acceleration(MOTOR_RIGHT);
 }
 
-void startMotor(int motor) {
-  if (motor == MOTOR_LEFT) {
-    isLeftAcceleration = true;
-    i_left = MIN_SPEED;
-    acceleration(motor);
-  }
-  else if (motor == MOTOR_RIGHT) {
-    isRightAcceleration = true;
-    i_right = MIN_SPEED;
-    acceleration(motor);
+void startMotor(int motorNum) {
+  if (motorNum == MOTOR_LEFT || motorNum == MOTOR_RIGHT) {
+    motor[motorNum].inAcceleration = true;
+    motor[motorNum].speed = MIN_SPEED;
   }
 }
 
-void acceleration(int motor) {
-  if (isLeftAcceleration && motor == MOTOR_LEFT) {
-    analogWrite(motor, i_left);
-    i_left++;
-    if (i_left >= MAX_SPEED)
-      isLeftAcceleration = false;
+void acceleration(int motorNum) {
+  if (motorNum != MOTOR_LEFT && motorNum != MOTOR_RIGHT)
+    return;
+
+  for (int i = 0; i < 2; ++i) {
+    if (motor[i].inAcceleration) {
+      motor[i].speed++;
+      analogWrite(motor[motorNum].pin, motor[motorNum].speed);
+      if (motor[i].speed >= MAX_SPEED)
+	motor[i].inAcceleration = false;
+    }
   }
-  else if (isRightAcceleration && motor == MOTOR_RIGHT) {
-    analogWrite(motor, i_right);
-    i_right++;
-    if (i_right >= MAX_SPEED)
-      isRightAcceleration = false;
-  }
-  delay(10);
+
+  delay(ACCELERATION_DELAY);
 }
 
 //-------------------------------------
 //
 void setup() {
   Serial.begin(9600);
-  pinMode(MOTOR_LEFT, OUTPUT);
-  pinMode(MOTOR_RIGHT, OUTPUT);
+  pinMode(PIN_MOTOR_LEFT, OUTPUT);
+  pinMode(PIN_MOTOR_RIGHT, OUTPUT);
 }
 
 void loop() {
@@ -76,8 +80,6 @@ void loop() {
       break;
     case CMD_RIGHT_STOP:
       analogWrite(MOTOR_RIGHT, 0);
-      break;
-    default:
       break;
     }
   }
