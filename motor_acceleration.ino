@@ -31,10 +31,6 @@ void run() {
 
 void startMotor(int motorNum) {
   if (motorNum == MOTOR_LEFT || motorNum == MOTOR_RIGHT) {
-
-    Serial.print("Starting motor: ");
-    Serial.println(motorNum);
-
     motor[motorNum].inAcceleration = true;
     motor[motorNum].speed = MIN_SPEED;
   }
@@ -72,18 +68,16 @@ void loop() {
 
     switch(buffer) {
     case CMD_LEFT_START:
-      // analogWrite(PIN_MOTOR_LEFT, 100);
       startMotor(MOTOR_LEFT);
       break;
     case CMD_RIGHT_START:
-      // analogWrite(PIN_MOTOR_RIGHT, 100);
       startMotor(MOTOR_RIGHT);
       break;
     case CMD_LEFT_STOP:
-      analogWrite(MOTOR_LEFT, 0);
+      analogWrite(PIN_MOTOR_LEFT, 0);
       break;
     case CMD_RIGHT_STOP:
-      analogWrite(MOTOR_RIGHT, 0);
+      analogWrite(PIN_MOTOR_RIGHT, 0);
       break;
     }
   }
