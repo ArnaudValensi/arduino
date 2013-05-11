@@ -116,7 +116,6 @@ void setup() {
 void loop() {
   int buffer;
 
-  goForward();
   if (Serial.available() > 0) {
     buffer = Serial.read();
 
@@ -183,10 +182,10 @@ void move(struct Direction &dir)
   analogWrite(INB_2, dir.inb_2);
 }
 
-void goForward()
-{
-  move(dirMap[DIR_FORWARD].dir);
-}
+// void goForward()
+// {
+//   move(dirMap[DIR_FORWARD].dir);
+// }
 
 // void backward()
 // {
