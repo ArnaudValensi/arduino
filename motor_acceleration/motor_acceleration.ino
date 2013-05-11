@@ -48,11 +48,11 @@ typedef struct {
 //--------------------------------------------------------
 // INIT VARIABLE
 //--------------------------------------------------------
-Direction forward  = { 1, 0, 1, 0 };
-Direction backward = { 0, 1, 0, 1 };
-Direction left     = { 0, 1, 1, 0 };
-Direction right    = { 1, 0, 0, 1 };
-Direction stop     = { 0, 0, 0, 0};
+Direction forward  = { { 1, 0, 1, 0 } };
+Direction backward = { { 0, 1, 0, 1 } };
+Direction left     = { { 0, 1, 1, 0 } };
+Direction right    = { { 1, 0, 0, 1 } };
+Direction stop     = { { 0, 0, 0, 0} };
 
 struct DirectionMap dirMap[] =
 {
@@ -143,7 +143,7 @@ void startMotor(struct Direction &dir) {
   motor.dirSpeed = dir;
   for (int i = 0; i < 4; ++i) {
     if (motor.dirSpeed.in[i] == 1)
-      motor.dirSpeed.in[i] = MIN_SPEED;
+      motor.dirSpeed.in[i] = MIN_SPEED + 1;
   }
 }
 
