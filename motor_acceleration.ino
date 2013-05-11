@@ -22,10 +22,12 @@ void run() {
 void startMotor(int motor) {
   if (motor == MOTOR_LEFT) {
     isLeftAcceleration = true;
+    i_left = MIN_SPEED;
     acceleration(motor);
   }
   else if (motor == MOTOR_RIGHT) {
     isRightAcceleration = true;
+    i_right = MIN_SPEED;
     acceleration(motor);
   }
 }
@@ -54,16 +56,18 @@ void setup() {
 }
 
 void loop() {
-  int buffer;
+  char buffer;
 
   if (Serial.available() > 0) {
     buffer = Serial.read();
 
     switch(buffer) {
     case CMD_LEFT_START:
-      startMotor(CMD_LEFT_START);
+      analogWrite(MOTOR_LEFT, 100);
+      //startMotor(CMD_LEFT_START);
     case CMD_RIGHT_START:
-      startMotor(CMD_RIGHT_START);
+      analogWrite(MOTOR_RIGHT, 100);
+      //startMotor(CMD_RIGHT_START);
     case CMD_LEFT_STOP:
       analogWrite(MOTOR_LEFT, 0);
     case CMD_RIGHT_STOP:
