@@ -53,11 +53,14 @@ typedef struct {
 //--------------------------------------------------------
 // INIT VARIABLE
 //--------------------------------------------------------
-Direction forward  = { HIGH, LOW, HIGH, LOW };
-Direction backward = { LOW, HIGH, LOW, HIGH };
-Direction left     = { LOW, HIGH, HIGH, LOW };
-Direction right    = { HIGH, LOW, LOW, HIGH };
-Direction stop     = { LOW, LOW, LOW, LOW};
+#define NORUN	0
+#define RUN	150
+
+Direction forward  = { RUN, NORUN, RUN, NORUN };
+Direction backward = { NORUN, RUN, NORUN, RUN };
+Direction left     = { NORUN, RUN, RUN, NORUN };
+Direction right    = { RUN, NORUN, NORUN, RUN };
+Direction stop     = { NORUN, NORUN, NORUN, NORUN};
 
 struct DirectionMap dirMap[] =
 {
