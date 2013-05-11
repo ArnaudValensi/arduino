@@ -119,7 +119,8 @@ void loop() {
   if (Serial.available() > 0) {
     buffer = Serial.read();
 
-    move(*getDir((char) buffer));
+    goForward();
+    // move(*getDir((char) buffer));
 
     // switch(buffer) {
     // case CMD_LEFT_START:
@@ -182,10 +183,10 @@ void move(struct Direction &dir)
   digitalWrite(INB_2, dir.inb_2);
 }
 
-// void forward()
-// {
-//   move(dirMap[DIR_FORWARD].dir);
-// }
+void goForward()
+{
+  move(dirMap[DIR_FORWARD].dir);
+}
 
 // void backward()
 // {
