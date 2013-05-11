@@ -177,10 +177,10 @@ void loop() {
 
 void move(struct Direction &dir)
 {
-  digitalWrite(INA_1, dir.ina_1);
-  digitalWrite(INA_2, dir.ina_2);
-  digitalWrite(INB_1, dir.inb_1);
-  digitalWrite(INB_2, dir.inb_2);
+  analogWrite(INA_1, dir.ina_1);
+  analogWrite(INA_2, dir.ina_2);
+  analogWrite(INB_1, dir.inb_1);
+  analogWrite(INB_2, dir.inb_2);
 }
 
 void goForward()
