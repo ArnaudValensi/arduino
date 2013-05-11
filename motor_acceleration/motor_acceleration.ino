@@ -116,11 +116,11 @@ void setup() {
 void loop() {
   int buffer;
 
+  goForward();
   if (Serial.available() > 0) {
     buffer = Serial.read();
 
-    goForward();
-    // move(*getDir((char) buffer));
+    move(*getDir((char) buffer));
 
     // switch(buffer) {
     // case CMD_LEFT_START:
