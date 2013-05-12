@@ -1,17 +1,16 @@
 #define MOTOR_LEFT		0
 #define MOTOR_RIGHT		1
-// #define PIN_MOTOR_LEFT		5
-// #define PIN_MOTOR_RIGHT		6
 #define MAX_SPEED		255
 #define MIN_SPEED		40
 #define ACCELERATION_DELAY	10
-#define CMD_LEFT_START		'd'
-#define CMD_RIGHT_START		'g'
-#define CMD_LEFT_STOP		's'
-#define CMD_RIGHT_STOP		'h'
-#define CMD_STOP		' '
-#define CMD_FORWARD		'r'
-#define CMD_BACKWARD		'f'
+
+// #define CMD_LEFT_START		'd'
+// #define CMD_RIGHT_START		'g'
+// #define CMD_LEFT_STOP		's'
+// #define CMD_RIGHT_STOP		'h'
+// #define CMD_STOP		' '
+// #define CMD_FORWARD		'r'
+// #define CMD_BACKWARD		'f'
 
 
 // #define ENABLE_A		5
@@ -97,37 +96,17 @@ void setup() {
 
   // analogWrite(ENABLE_A, 255);
   // analogWrite(ENABLE_B, 255);
-
-  // pinMode(PIN_MOTOR_LEFT, OUTPUT);
-  // pinMode(PIN_MOTOR_RIGHT, OUTPUT);
 }
 
 void loop() {
-  int buffer;
+  int		buffer;
+  struct Direction	*dir;
 
   if (Serial.available() > 0) {
     buffer = Serial.read();
 
-    startMotor(*getDir((char) buffer));
-
-    // switch(buffer) {
-    // case CMD_LEFT_START:
-    //   startMotor(MOTOR_LEFT);
-    //   break;
-    // case CMD_RIGHT_START:
-    //   startMotor(MOTOR_RIGHT);
-    //   break;
-    // case CMD_LEFT_STOP:
-    //   analogWrite(PIN_MOTOR_LEFT, 0);
-    //   break;
-    // case CMD_RIGHT_STOP:
-    //   analogWrite(PIN_MOTOR_RIGHT, 0);
-    //   break;
-    // case CMD_STOP:
-    //   analogWrite(PIN_MOTOR_LEFT, 0);
-    //   analogWrite(PIN_MOTOR_RIGHT, 0);
-    //   break;
-    // }
+    if ((dir = getDir((char) buffer)) != NULL)
+      startMotor(*dir);
   }
   run();
 }
@@ -156,29 +135,6 @@ void acceleration() {
   delay(ACCELERATION_DELAY);
 }
 
-// void startMotor(struct Direction &dir) {
-//   if (motorNum == MOTOR_LEFT || motorNum == MOTOR_RIGHT) {
-//     motor[motorNum].inAcceleration = true;
-//     motor[motorNum].speed = MIN_SPEED;
-//   }
-// }
-
-// void acceleration(int motorNum) {
-//   if (motorNum != MOTOR_LEFT && motorNum != MOTOR_RIGHT)
-//     return;
-
-//   for (int i = 0; i < 2; ++i) {
-//     if (motor[i].inAcceleration) {
-//       motor[i].speed++;
-//       // analogWrite(motor[motorNum].pin, motor[motorNum].speed);
-//       if (motor[i].speed >= MAX_SPEED)
-// 	motor[i].inAcceleration = false;
-//     }
-//   }
-
-//   delay(ACCELERATION_DELAY);
-// }
-
 void move(struct Direction &dir)
 {
   analogWrite(INA_1, dir.in[0]);
@@ -186,28 +142,3 @@ void move(struct Direction &dir)
   analogWrite(INB_1, dir.in[2]);
   analogWrite(INB_2, dir.in[3]);
 }
-
-// void goForward()
-// {
-//   move(dirMap[DIR_FORWARD].dir);
-// }
-
-// void backward()
-// {
-//   move(dirMap[DIR_BACKWARD].dir);
-// }
-
-// void left()
-// {
-//   move(dirMap[DIR_LEFT].dir);
-// }
-
-// void right()
-// {
-//   move(dirMap[DIR_RIGHT].dir);
-// }
-
-// void stop()
-// {
-//   move(dirMap[DIR_STOP].dir);
-// }
