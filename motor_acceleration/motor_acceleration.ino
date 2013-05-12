@@ -51,11 +51,11 @@ Direction forward  = { { 1, 0, 1, 0 } };
 Direction backward = { { 0, 1, 0, 1 } };
 Direction left     = { { 0, 1, 1, 0 } };
 Direction right    = { { 1, 0, 0, 1 } };
-Direction stop     = { { 0, 0, 0, 0 } };
+Direction halt     = { { 0, 0, 0, 0 } };
 
-struct DirectionMap dirMap[] =
+DirectionMap dirMap[] =
 {
-  { 'f', stop },
+  { 'f', halt },
   { 'w', forward },
   { 's', backward },
   { 'a', left },
@@ -63,7 +63,7 @@ struct DirectionMap dirMap[] =
   { 0, NULL }
 };
 
-struct Direction *dir;
+Direction *dir;
 
 t_motor motor;
 
