@@ -51,11 +51,11 @@ Direction forward  = { { 1, 0, 1, 0 } };
 Direction backward = { { 0, 1, 0, 1 } };
 Direction left     = { { 0, 1, 1, 0 } };
 Direction right    = { { 1, 0, 0, 1 } };
-Direction halt     = { { 0, 0, 0, 0 } };
+Direction stand    = { { 0, 0, 0, 0 } };
 
 DirectionMap dirMap[] =
 {
-  { 'f', halt },
+  { 'f', stand },
   { 'w', forward },
   { 's', backward },
   { 'a', left },
@@ -99,7 +99,7 @@ void setup() {
 }
 
 void loop() {
-  int		buffer;
+  int			buffer;
   struct Direction	*dir;
 
   if (Serial.available() > 0) {
