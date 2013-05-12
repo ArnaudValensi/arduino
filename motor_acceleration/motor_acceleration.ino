@@ -117,8 +117,11 @@ bool isDirEqual(struct Direction &dir1, struct Direction &dir2) {
 }
 
 void startMotor(struct Direction &dir) {
+  // Progressif start if we want to go forward
   if (isDirEqual(dir, forward))
     motor.dirSpeed = dir;
+
+  // Keep the speed if one of the new direction is the same than before
   else
     {
       for (int i = 0; i < 4; ++i) {
@@ -127,6 +130,7 @@ void startMotor(struct Direction &dir) {
       }
     }
 
+  // Init with the MIN_SPEED the active pins
   for (int i = 0; i < 4; ++i) {
     // if (!(dir.in[i] && motor.dirSpeed.in[i]))
     //   motor.dirSpeed.in[i] = dir.in[i];
@@ -136,6 +140,8 @@ void startMotor(struct Direction &dir) {
 }
 
 void acceleration() {
+  // The pin(Direction.in[*]) which have a value greater than 0 will be
+  // incremented, the others will keep the value 0
   for (int i = 0; i < 4; ++i) {
     if (motor.dirSpeed.in[i] > 0 && motor.dirSpeed.in[i] < MAX_SPEED)
       (motor.dirSpeed.in[i])++;
