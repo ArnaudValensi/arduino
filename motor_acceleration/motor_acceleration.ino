@@ -107,12 +107,29 @@ void run() {
   acceleration();
 }
 
+// Compare two dir, return true if egual
+bool isDirEqual(struct Direction &dir1, struct Direction &dir2) {
+  bool isEqual = false;
+
+  for (int i = 0; i < 4; ++i)
+    isEqual |= !(dir1.in[i] == dir2.in[i]);
+  return !isEqual;
+}
+
 void startMotor(struct Direction &dir) {
-  // motor.dirSpeed = dir;
+  if (isDirEqual(motor.dirSpeed, dir))
+    motor.dirSpeed = dir;
+  else
+    {
+      for (int i = 0; i < 4; ++i) {
+	if (!(dir.in[i] && motor.dirSpeed.in[i]))
+	  motor.dirSpeed.in[i] = dir.in[i];
+      }
+    }
 
   for (int i = 0; i < 4; ++i) {
-    if (!(dir.in[i] && motor.dirSpeed.in[i]))
-      motor.dirSpeed.in[i] = dir.in[i];
+    // if (!(dir.in[i] && motor.dirSpeed.in[i]))
+    //   motor.dirSpeed.in[i] = dir.in[i];
     if (motor.dirSpeed.in[i] == 1)
       motor.dirSpeed.in[i] = MIN_SPEED + 1;
   }
