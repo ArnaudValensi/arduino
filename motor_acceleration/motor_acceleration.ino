@@ -1,4 +1,4 @@
-#define MAX_SPEED		254
+#define MAX_SPEED		255
 #define MIN_SPEED		40
 #define ACCELERATION_DELAY	10
 
