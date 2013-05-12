@@ -44,10 +44,10 @@ Direction stand    = { { 0, 0, 0, 0 } };
 
 DirectionMap dirMap[] =
 {
-  { 'f', stand },
-  { 'w', forward },
-  { 's', backward },
-  { 'a', left },
+  { 's', stand },
+  { 'a', forward },
+  { 'r', backward },
+  { 'g', left },
   { 'd', right },
   { 0, NULL }
 };
