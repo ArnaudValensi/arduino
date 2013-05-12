@@ -108,8 +108,11 @@ void run() {
 }
 
 void startMotor(struct Direction &dir) {
-  motor.dirSpeed = dir;
+  // motor.dirSpeed = dir;
+
   for (int i = 0; i < 4; ++i) {
+    if (!(dir.in[i] && motor.dirSpeed.in[i]))
+      motor.dirSpeed.in[i] = dir.in[i];
     if (motor.dirSpeed.in[i] == 1)
       motor.dirSpeed.in[i] = MIN_SPEED + 1;
   }
