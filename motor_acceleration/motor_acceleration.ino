@@ -1,17 +1,6 @@
-#define MOTOR_LEFT		0
-#define MOTOR_RIGHT		1
-#define MAX_SPEED		255
+#define MAX_SPEED		254
 #define MIN_SPEED		40
 #define ACCELERATION_DELAY	10
-
-// #define CMD_LEFT_START		'd'
-// #define CMD_RIGHT_START		'g'
-// #define CMD_LEFT_STOP		's'
-// #define CMD_RIGHT_STOP		'h'
-// #define CMD_STOP		' '
-// #define CMD_FORWARD		'r'
-// #define CMD_BACKWARD		'f'
-
 
 // #define ENABLE_A		5
 // #define ENABLE_B		6
@@ -128,7 +117,7 @@ void startMotor(struct Direction &dir) {
 
 void acceleration() {
   for (int i = 0; i < 4; ++i) {
-    if (motor.dirSpeed.in[i] > 0 && motor.dirSpeed.in[i] < 254)
+    if (motor.dirSpeed.in[i] > 0 && motor.dirSpeed.in[i] < MAX_SPEED)
       (motor.dirSpeed.in[i])++;
   }
   move(motor.dirSpeed);
