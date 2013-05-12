@@ -117,7 +117,7 @@ bool isDirEqual(struct Direction &dir1, struct Direction &dir2) {
 }
 
 void startMotor(struct Direction &dir) {
-  if (isDirEqual(motor.dirSpeed, dir))
+  if (isDirEqual(dir, forward))
     motor.dirSpeed = dir;
   else
     {
