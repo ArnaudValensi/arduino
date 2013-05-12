@@ -109,11 +109,11 @@ void run() {
 
 // Compare two dir, return true if egual
 bool isDirEqual(struct Direction &dir1, struct Direction &dir2) {
-  bool isEqual = false;
+  bool isDifferent = false;
 
   for (int i = 0; i < 4; ++i)
-    isEqual |= !(dir1.in[i] == dir2.in[i]);
-  return !isEqual;
+    isDifferent |= (dir1.in[i] != dir2.in[i]);
+  return !isDifferent;
 }
 
 void startMotor(struct Direction &dir) {
