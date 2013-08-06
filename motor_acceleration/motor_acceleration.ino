@@ -33,6 +33,13 @@ typedef struct {
   Direction	dirSpeed;
 } t_motor;
 
+typedef struct {
+  char flag;
+  uint8_t pin;
+  uint8_t value;
+} 
+__attribute__((__packed__))data_packet_t;
+
 //--------------------------------------------------------
 // INIT VARIABLE
 //--------------------------------------------------------
@@ -55,6 +62,8 @@ DirectionMap dirMap[] =
 Direction *dir;
 
 t_motor motor;
+
+data_packet_t data;
 
 //--------------------------------------------------------
 // MAP FUNCTION
@@ -88,14 +97,29 @@ void setup() {
 }
 
 void loop() {
-  int			buffer;
+  //int			buffer;
   struct Direction	*dir;
 
-  if (Serial.available() > 0) {
-    buffer = Serial.read();
+  unsigned long buffer_size = sizeof(data_packet_t);
+  char buffer[buffer_size];
 
-    if ((dir = getDir((char) buffer)) != NULL)
-      startMotor(*dir);
+  if (Serial.available())
+  {
+    if (Serial.readBytes(buffer, buffer_size) > 0)
+    { 
+      memcpy(&data, buffer, buffer_size);
+
+    //if (Serial.available() > 0) {
+      //buffer = Serial.read();
+      
+      Serial.print("pin: ");
+      Serial.print(data.pin);
+      Serial.print(" value: ");
+      Serial.println(data.value);
+      
+      if ((dir = getDir((char) data.value)) != NULL)
+	startMotor(*dir);
+    }
   }
   run();
 }
